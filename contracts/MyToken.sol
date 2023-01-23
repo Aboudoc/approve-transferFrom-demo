@@ -31,9 +31,9 @@ contract Token {
 }
 
 contract Protocol {
-    mapping(address => uint) balances;
+    mapping(address => uint) public balances;
 
-    function sendErc20Tokens(address _token, uint _amount) external {
+    function deposit(address _token, uint _amount) external {
         Token(_token).transferFrom(msg.sender, _amount);
         balances[msg.sender] += _amount;
     }
