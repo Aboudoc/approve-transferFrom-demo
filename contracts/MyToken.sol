@@ -24,6 +24,9 @@ contract Token {
 
     function transferFrom(address _owner, uint _amount) external {
         require(allowances[_owner][msg.sender] >= _amount);
+        allowances[_owner][msg.sender] -= _amount;
+        balances[msg.sender] += _amount;
+        balances[_owner] -= _amount;
     }
 }
 
