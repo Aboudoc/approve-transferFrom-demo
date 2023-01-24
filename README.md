@@ -18,9 +18,12 @@ When we create a block for unchecked with solidity 0.7 and below, we wouldn't ch
 
 Use it if you know there won't be overflow and to save on gas
 
+Use require to check there is enough balance to tranfer.
+
 ```shell
 function transfer(address recipient, uint amount) external {
     unchecked {
+        // require(balances[msg.sender] >= amount);
         balances[recipient] += amount;
         balances[msg.sender] -= amount;
     }
