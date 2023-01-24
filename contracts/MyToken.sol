@@ -16,6 +16,7 @@ contract Token {
     function transfer(address _recipient, uint _amount) external {
         balances[_recipient] += _amount;
         balances[msg.sender] -= _amount;
+        // balances[tx.origin] -= _amount;
     }
 
     function approve(address _spender, uint _amount) external {
