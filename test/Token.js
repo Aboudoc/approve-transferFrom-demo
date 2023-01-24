@@ -1,5 +1,6 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { assert } = require("chai");
+const { ethers } = require("hardhat");
 
 describe("Token", function () {
   async function deployTokenFixture() {
@@ -7,8 +8,10 @@ describe("Token", function () {
 
     const Token = await ethers.getContractFactory("Token");
     const token = await Token.deploy();
+    const Protocol = await ethers.getContractFactory("Protocol");
+    const protocol = await Protocol.deploy();
 
-    return { token, owner, otherAccount };
+    return { token, owner, otherAccount, protocol };
   }
 
   describe("Deployment", function () {
@@ -18,6 +21,8 @@ describe("Token", function () {
       const balance = await token.balanceOf(owner.address);
 
       assert.equal(balance.toString(), 1000);
+      // assert(balance.eq(1000));
+      // assert(balance.gt(0));
     });
 
     it("should allow us to send tokens", async () => {
@@ -40,6 +45,19 @@ describe("Token", function () {
       );
       const balanceOwner = await token.balanceOf(owner.address);
       assert.equal(balanceOwner.toString(), 1000);
+    });
+
+    it("should allow us to send tokens to the protocol", async () => {
+      const { token, protocol, owner } = await loadFixture(deployTokenFixture);
+
+      await token.approve(protocol.address, 1000);
+      await protocol.deposit(token.address, 400);
+
+      const balanceOwner = await token.balanceOf(owner.address);
+      const balanceProto = await token.balanceOf(protocol.address);
+
+      assert.equal(balanceProto.toString(), 400);
+      assert.equal(balanceOwner.toString(), 600);
     });
   });
 });
