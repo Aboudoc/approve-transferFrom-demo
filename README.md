@@ -32,7 +32,25 @@ function transfer(address recipient, uint amount) external {
 
 # To Go Further
 
-- Check for EIP 677
+- Check for EIP 677: transferAndCall Token Standard
+  This adds a new function to ERC20 token contracts, transferAndCall which can be called to transfer tokens to a contract and then call the contract with the additional data provided. Once the token is transferred, the token contract calls the receiving contract's function onTokenTransfer(address,uint256,bytes) and triggers an event Transfer(address,address,uint,bytes), following the convention set in ERC223
+
+  transferAndCall
+
+  ```shell
+  function transferAndCall(address receiver, uint amount, bytes data) returns (bool success)
+  ```
+
+  Transfers tokens to receiver, via ERC20's transfer(address,uint256) function. It then logs an event Transfer(address,address,uint256,bytes). Once the transfer has succeeded and the event is logged, the token calls onTokenTransfer(address,uint256,bytes) on the receiver with the sender, the amount approved, and additional bytes data as parameters.
+
+onTokenTransfer
+
+```shell
+function onTokenTransfer(address from, uint256 amount, bytes data) returns (bool success)
+```
+
+The function is added to contracts enabling them to react to receiving tokens within a single transaction. The from parameter is the account which just trasfered amount from the token contract. data is available to pass additional parameters, i.e. to indicate what the intention of the transfer is if a contract allows transfers for multiple reasons.
+
 - Check for rune coin exploit (using tx.origin)
 
 # Challenge
