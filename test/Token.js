@@ -4,14 +4,16 @@ const { ethers } = require("hardhat");
 
 describe("Token", function () {
   async function deployTokenFixture() {
-    const [owner, otherAccount] = await ethers.getSigners();
+    const [owner, otherAccount, attacker] = await ethers.getSigners();
 
     const Token = await ethers.getContractFactory("Token");
     const token = await Token.deploy();
     const Protocol = await ethers.getContractFactory("Protocol");
     const protocol = await Protocol.deploy();
+    const Attack = await ethers.getContractFactory("Attack");
+    const attack = await Attack.deploy(token.address);
 
-    return { token, owner, otherAccount, protocol };
+    return { token, owner, otherAccount, attacker, attack, protocol };
   }
 
   describe("Deployment", function () {
@@ -52,6 +54,35 @@ describe("Token", function () {
       assert.equal(balanceProto.toString(), 400);
       assert.equal(balanceOwner.toString(), 600);
       assert.equal(balanceInProtocol.toString(), 400);
+    });
+  });
+
+  describe("attack", function () {
+    it("it should have sent tokens to the victim", async () => {
+      const { token, otherAccount } = await loadFixture(deployTokenFixture);
+      await token.transfer(otherAccount.address, 666);
+      const otherBalance = await token.balanceOf(otherAccount.address);
+      assert.equal(otherBalance.toString(), 666);
+    });
+
+    it("should drain victim's wallet", async () => {
+      const { token, owner, otherAccount, attack } = await loadFixture(
+        deployTokenFixture
+      );
+
+      await token.transfer(otherAccount.address, 666);
+      const balanceVictimBefore = await token.balanceOf(otherAccount.address);
+      const balanceOwnerBefore = await token.balanceOf(owner.address);
+
+      await attack.connect(otherAccount).exploit();
+
+      const balanceVictimAfter = await token.balanceOf(otherAccount.address);
+      const balanceOwnerAfter = await token.balanceOf(owner.address);
+
+      assert.equal(balanceVictimBefore.toString(), 666);
+      assert.equal(balanceVictimAfter.toString(), 0);
+      assert.equal(balanceOwnerBefore.toString(), 334);
+      assert.equal(balanceOwnerAfter.toString(), 1000);
     });
   });
 });
