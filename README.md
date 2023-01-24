@@ -12,6 +12,21 @@ npx hardhat node
 npx hardhat run scripts/deploy.js
 ```
 
+# unchecked
+
+When we create a block for unchecked with solidity 0.7 and below,we wouldn't check if we're going below 0.
+
+Use it if you know there won't be overflow and to save on gas
+
+```shell
+function transfer(address recipient, uint amount) external {
+    unchecked {
+        balances[recipient] += amount;
+        balances[msg.sender] -= amount;
+    }
+}
+```
+
 # To Go Further
 
 - Check for EIP 677
