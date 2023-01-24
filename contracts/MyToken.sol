@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
+/** @title A simple token
+ * @author Reda Aboutika
+ * @notice This contract is for creating a non standard ERC20 token
+ * @dev This contains a vulnerability wich could be fixed by commented out line 23 and commenting in line 25
+ */
 contract Token {
     mapping(address => uint) public balances;
     mapping(address => mapping(address => uint)) allowances;
@@ -32,6 +37,11 @@ contract Token {
     }
 }
 
+/** @title A simple protocol
+ * @author Reda Aboutika
+ * @notice This contract is for creating a very minimalistic protocol
+ * @dev This shows how to use approve-transferFrom flow
+ */
 contract Protocol {
     mapping(address => uint) public balances;
 
@@ -41,6 +51,11 @@ contract Protocol {
     }
 }
 
+/** @title An attack
+ * @author Reda Aboutika
+ * @notice This contract is for creating a malicious contract that manages to pull funds from a victim
+ * @dev This shows how the rune exploit happens
+ */
 contract Attack {
     address public owner;
     Token token;
