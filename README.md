@@ -53,6 +53,7 @@ function onTokenTransfer(address from, uint256 amount, bytes data) returns (bool
 The function is added to contracts enabling them to react to receiving tokens within a single transaction. The from parameter is the account which just trasfered amount from the token contract. data is available to pass additional parameters, i.e. to indicate what the intention of the transfer is if a contract allows transfers for multiple reasons.
 
 -- Check for rune coin exploit (using tx.origin) --
+
 https://docs.soliditylang.org/en/develop/security-considerations.html#tx-origin
 
 https://solidity-by-example.org/hacks/phishing-with-tx-origin/
