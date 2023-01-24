@@ -39,14 +39,6 @@ describe("Token", function () {
       assert.equal(balanceOther.toString(), 999);
     });
 
-    it("it should allow us to do approve/tranferFrom", async () => {
-      const { token, owner, otherAccount } = await loadFixture(
-        deployTokenFixture
-      );
-      const balanceOwner = await token.balanceOf(owner.address);
-      assert.equal(balanceOwner.toString(), 1000);
-    });
-
     it("should allow us to send tokens to the protocol", async () => {
       const { token, protocol, owner } = await loadFixture(deployTokenFixture);
 
@@ -55,9 +47,11 @@ describe("Token", function () {
 
       const balanceOwner = await token.balanceOf(owner.address);
       const balanceProto = await token.balanceOf(protocol.address);
+      const balanceInProtocol = await protocol.balances(owner.address);
 
       assert.equal(balanceProto.toString(), 400);
       assert.equal(balanceOwner.toString(), 600);
+      assert.equal(balanceInProtocol.toString(), 400);
     });
   });
 });
